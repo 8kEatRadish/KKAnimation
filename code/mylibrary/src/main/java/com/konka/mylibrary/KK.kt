@@ -20,7 +20,7 @@ import java.util.*
  *描述: konka动画
  *作者: SuiHongWei 2020/6/9
  **/
-@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS","UNCHECKED_CAST")
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "UNCHECKED_CAST")
 class KK private constructor(animationComposer: AnimationComposer) {
     //动画实例
     private val animator: KKBaseAnimator
@@ -203,6 +203,7 @@ class KK private constructor(animationComposer: AnimationComposer) {
 
     }
 
+    //播放动画
     private fun play(): KKBaseAnimator {
         animator.setTarget(target)
         if (pivotX == CENTER_PIVOT) {
@@ -230,26 +231,41 @@ class KK private constructor(animationComposer: AnimationComposer) {
     }
 
     companion object {
+        //动画时间
         private const val DURATION: Long = KKBaseAnimator.DURATION
+
+        //延迟时间
         private const val NO_DELAY: Long = 0
+
         const val INFINITE = -1
+
         val CENTER_PIVOT = Float.MAX_VALUE
+
         //是否在入场动画
         private var isEnter = false
+
+        //使用反射创建
         fun with(techniques: Techniques): AnimationComposer {
             return AnimationComposer(techniques)
         }
 
+        //使用实例创建
         fun with(animator: KKBaseAnimator): AnimationComposer {
             return AnimationComposer(animator)
         }
 
-        private val DEFAULT_TIME_INTERPOLATOR: TimeInterpolator =
-            LinearInterpolator() // default uniform motion
-        private val DEFAULT_TRANSITION_DURATION: Long = 600 // default 600 milliseconds
-        private val TRANSITION_MATERIALS =
-            "CY_TRANSITION_TRANSITION_MATERIALS" //Extra key
+        //默认差值器
+        private val DEFAULT_TIME_INTERPOLATOR: TimeInterpolator = LinearInterpolator()
 
+        //默认过长动画时间长度
+        private val DEFAULT_TRANSITION_DURATION: Long = 600
+
+        //共享元素名称
+        private val TRANSITION_MATERIALS = "KK_ANIMATION_TRANSITION_MATERIALS"
+
+        /**
+         * 跳转方法
+         */
         fun startActivity(
             @NonNull intent: Intent?,
             @NonNull act: Activity?,
@@ -292,6 +308,9 @@ class KK private constructor(animationComposer: AnimationComposer) {
             activity?.overridePendingTransition(0, 0)
         }
 
+        /**
+         * 进入动画
+         */
         fun runEnterAnim(activity: Activity) {
             runEnterAnim(activity, DEFAULT_TRANSITION_DURATION)
         }
@@ -380,6 +399,9 @@ class KK private constructor(animationComposer: AnimationComposer) {
             }, duration)
         }
 
+        /**
+         * 退出动画
+         */
         fun runExitAnim(kk: KK, activity: Activity) {
             runExitAnim(activity, DEFAULT_TRANSITION_DURATION)
         }
@@ -417,6 +439,7 @@ class KK private constructor(animationComposer: AnimationComposer) {
             activity: Activity, duration: Long,
             interpolator: TimeInterpolator?, listener: Animator.AnimatorListener?
         ) {
+            //防止进场动画没有完成就退出
             if (isEnter) return
             val attrs: ArrayList<ViewAttrs> =
                 activity.intent.getParcelableArrayListExtra<ViewAttrs>(Companion.TRANSITION_MATERIALS)
