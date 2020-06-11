@@ -234,6 +234,8 @@ class KK private constructor(animationComposer: AnimationComposer) {
         private const val NO_DELAY: Long = 0
         const val INFINITE = -1
         val CENTER_PIVOT = Float.MAX_VALUE
+        //是否在入场动画
+        private var isEnter = false
         fun with(techniques: Techniques): AnimationComposer {
             return AnimationComposer(techniques)
         }
@@ -271,7 +273,7 @@ class KK private constructor(animationComposer: AnimationComposer) {
             @NonNull vararg views: View?
         ) {
             val materials: Materials = Materials.createMaterials(*views as Array<out View>)
-            intent.putParcelableArrayListExtra(Companion.TRANSITION_MATERIALS, materials.viewAttrs)
+            intent.putParcelableArrayListExtra(TRANSITION_MATERIALS, materials.viewAttrs)
             activity.startActivityForResult(intent, requestCode)
             // Disable system default transition animation
             activity.overridePendingTransition(0, 0)
@@ -339,10 +341,11 @@ class KK private constructor(animationComposer: AnimationComposer) {
             listener: Animator.AnimatorListener?
         ) {
             val attrs: ArrayList<ViewAttrs> =
-                activity.intent.getParcelableArrayListExtra<ViewAttrs>(Companion.TRANSITION_MATERIALS)
+                activity.intent.getParcelableArrayListExtra(TRANSITION_MATERIALS)
             if (attrs.isEmpty()) {
                 return
             }
+            isEnter = true
             for (attr in attrs) {
                 val view: View = activity.findViewById(attr.id) ?: continue
                 view.viewTreeObserver
@@ -354,7 +357,7 @@ class KK private constructor(animationComposer: AnimationComposer) {
                             view.pivotX = 0f
                             view.pivotY = 0f
                             view.translationX = (attr.screenX - location[0]).toFloat()
-                            view.translationY = (attr.screenX - location[1]).toFloat()
+                            view.translationY = (attr.screenY - location[1]).toFloat()
                             view.scaleX = attr.width * 1.0f / view.width
                             view.scaleY = attr.height * 1.0f / view.height
                             view.alpha = attr.alpha
@@ -372,6 +375,9 @@ class KK private constructor(animationComposer: AnimationComposer) {
                         }
                     })
             }
+            Handler().postDelayed({
+                isEnter = false
+            }, duration)
         }
 
         fun runExitAnim(kk: KK, activity: Activity) {
@@ -411,6 +417,7 @@ class KK private constructor(animationComposer: AnimationComposer) {
             activity: Activity, duration: Long,
             interpolator: TimeInterpolator?, listener: Animator.AnimatorListener?
         ) {
+            if (isEnter) return
             val attrs: ArrayList<ViewAttrs> =
                 activity.intent.getParcelableArrayListExtra<ViewAttrs>(Companion.TRANSITION_MATERIALS)
             //防止没有携带attrs导致activity无法关闭

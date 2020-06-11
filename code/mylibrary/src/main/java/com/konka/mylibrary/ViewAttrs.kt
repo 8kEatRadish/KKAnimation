@@ -46,16 +46,13 @@ class ViewAttrs : Parcelable {
         width = `in`.readInt()
         height = `in`.readInt()
     }
+    companion object CREATOR : Parcelable.Creator<ViewAttrs> {
+        override fun createFromParcel(source: Parcel): ViewAttrs {
+            return ViewAttrs(source)
+        }
 
-    companion object {
-        val CREATOR: Parcelable.Creator<ViewAttrs?> = object : Parcelable.Creator<ViewAttrs?> {
-            override fun createFromParcel(source: Parcel): ViewAttrs? {
-                return ViewAttrs(source)
-            }
-
-            override fun newArray(size: Int): Array<ViewAttrs?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<ViewAttrs?> {
+            return arrayOfNulls(size)
         }
     }
 }
