@@ -2,5 +2,5 @@
 
 #### 介绍
 
-![avatar](https://gitee.com/suihw/KKAnimation/blob/master/image/uml.jpg)
+![UML](https://gitee.com/suihw/KKAnimation/raw/master/image/uml.jpg)
 
