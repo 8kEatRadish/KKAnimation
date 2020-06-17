@@ -5,7 +5,6 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.Interpolator
-import androidx.core.view.ViewCompat
 
 /**
  *文件: KKBaseAnimator.kt
@@ -40,14 +39,14 @@ abstract class KKBaseAnimator {
      * @param target
      */
     fun reset(target: View?) {
-        ViewCompat.setAlpha(target, 1f)
-        ViewCompat.setScaleX(target, 1f)
-        ViewCompat.setScaleY(target, 1f)
-        ViewCompat.setTranslationX(target, 0f)
-        ViewCompat.setTranslationY(target, 0f)
-        ViewCompat.setRotation(target, 0f)
-        ViewCompat.setRotationY(target, 0f)
-        ViewCompat.setRotationX(target, 0f)
+        target?.alpha = 1f
+        target?.scaleX = 1f
+        target?.scaleY = 1f
+        target?.translationX = 0f
+        target?.translationY = 0f
+        target?.rotation = 0f
+        target?.rotationX = 0f
+        target?.rotationY = 0f
     }
 
     /**

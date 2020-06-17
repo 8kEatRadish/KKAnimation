@@ -11,7 +11,6 @@ import android.view.ViewTreeObserver
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import androidx.annotation.NonNull
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import java.util.*
 
@@ -207,12 +206,12 @@ class KK private constructor(animationComposer: AnimationComposer) {
     private fun play(): KKBaseAnimator {
         animator.setTarget(target)
         if (pivotX == CENTER_PIVOT) {
-            ViewCompat.setPivotX(target, target!!.measuredWidth / 2.0f)
+            target!!.pivotX = target.measuredWidth / 2.0f
         } else {
             target!!.pivotX = pivotX
         }
         if (pivotY == CENTER_PIVOT) {
-            ViewCompat.setPivotY(target, target.measuredHeight / 2.0f)
+            target.pivotY = target.measuredHeight / 2.0f
         } else {
             target.pivotY = pivotY
         }
