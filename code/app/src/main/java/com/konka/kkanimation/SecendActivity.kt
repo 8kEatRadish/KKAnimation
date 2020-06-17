@@ -14,7 +14,7 @@ class SecendActivity : AppCompatActivity(){
         setContentView(R.layout.activity_second)
         val str = intent.getStringExtra("test")
         findViewById<TextView>(R.id.textview_first).text = str
-        KK.Companion.runEnterAnim(this,1800,object : Animator.AnimatorListener{
+        KK.runEnterAnim(this,1800,object : Animator.AnimatorListener{
             override fun onAnimationRepeat(animation: Animator?) {
             }
 

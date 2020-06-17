@@ -39,7 +39,7 @@ class FirstFragment : Fragment() {
             var intent = Intent(context,SecendActivity::class.java)
             intent.putExtra("test","我是测试的")
 //            KK.startActivity(intent,this,textView , test_image)
-            KK.Companion.with(Techniques.BounceAnimator)
+            KK.with(Techniques.BounceAnimator)
                 .duration(2000)
                 .pivot(KK.CENTER_PIVOT,KK.CENTER_PIVOT)
                 .interpolate(AccelerateDecelerateInterpolator())
