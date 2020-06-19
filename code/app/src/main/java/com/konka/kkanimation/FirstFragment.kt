@@ -43,7 +43,7 @@ class FirstFragment : Fragment() {
                 .duration(2000)
                 .pivot(KK.CENTER_PIVOT,KK.CENTER_PIVOT)
                 .interpolate(AccelerateDecelerateInterpolator())
-                .repeat(KK.INFINITE)
+                .repeat(1)
                 .withListener(object : Animator.AnimatorListener{
                     override fun onAnimationRepeat(animation: Animator?) {
                     }

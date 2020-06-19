@@ -33,7 +33,7 @@ class KK private constructor(animationComposer: AnimationComposer) {
     //是否重复播放
     private val repeat: Boolean
 
-    //重复时间
+    //重复次数
     private val repeatTimes: Int
 
     //重复模式
@@ -72,15 +72,15 @@ class KK private constructor(animationComposer: AnimationComposer) {
     class AnimationComposer {
         internal val callbacks: MutableList<Animator.AnimatorListener> =
             ArrayList()
-        var animator: KKBaseAnimator
-        var duration = DURATION
-        var delay = NO_DELAY
-        var repeat = false
-        var repeatTimes = 0
+        internal var animator: KKBaseAnimator
+        internal var duration = DURATION
+        internal var delay = NO_DELAY
+        internal var repeat = false
+        internal var repeatTimes = 0
         internal var repeatMode = ValueAnimator.RESTART
-        var pivotX = CENTER_PIVOT
+        internal var pivotX = CENTER_PIVOT
         internal var pivotY = CENTER_PIVOT
-        var interpolator: Interpolator? = null
+        internal var interpolator: Interpolator? = null
         internal var target: View? = null
 
         internal constructor(techniques: Techniques) {
@@ -204,29 +204,30 @@ class KK private constructor(animationComposer: AnimationComposer) {
 
     //播放动画
     private fun play(): KKBaseAnimator {
-        animator.setTarget(target)
-        if (pivotX == CENTER_PIVOT) {
-            target!!.pivotX = target.measuredWidth / 2.0f
-        } else {
-            target!!.pivotX = pivotX
-        }
-        if (pivotY == CENTER_PIVOT) {
-            target.pivotY = target.measuredHeight / 2.0f
-        } else {
-            target.pivotY = pivotY
-        }
-        animator.setDuration(duration)
-            .setRepeatTimes(repeatTimes)
-            .setRepeatMode(repeatMode)
-            .setInterpolator(interpolator)
-            .setStartDelay(delay)
-        if (callbacks.isNotEmpty()) {
-            for (callback in callbacks) {
-                animator.addAnimatorListener(callback)
+        return animator.apply {
+            setTarget(target)
+            if (pivotX == CENTER_PIVOT) {
+                target!!.pivotX = target.measuredWidth / 2.0f
+            } else {
+                target!!.pivotX = pivotX
             }
+            if (pivotY == CENTER_PIVOT) {
+                target.pivotY = target.measuredHeight / 2.0f
+            } else {
+                target.pivotY = pivotY
+            }
+            setDuration(duration)
+            setRepeatTimes(repeatTimes)
+            setRepeatMode(repeatMode)
+            setInterpolator(interpolator)
+            setStartDelay(delay)
+            if (callbacks.isNotEmpty()) {
+                for (callback in callbacks) {
+                    addAnimatorListener(callback)
+                }
+            }
+            animate()
         }
-        animator.animate()
-        return animator
     }
 
     companion object {
@@ -289,9 +290,10 @@ class KK private constructor(animationComposer: AnimationComposer) {
         ) {
             val materials: Materials = Materials.createMaterials(*views as Array<out View>)
             intent.putParcelableArrayListExtra(TRANSITION_MATERIALS, materials.viewAttrs)
-            activity.startActivityForResult(intent, requestCode)
-            // Disable system default transition animation
-            activity.overridePendingTransition(0, 0)
+            activity.run {
+                startActivityForResult(intent,requestCode)
+                overridePendingTransition(0,0)
+            }
         }
 
         fun startActivityForResult(
@@ -369,26 +371,29 @@ class KK private constructor(animationComposer: AnimationComposer) {
                 view.viewTreeObserver
                     .addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
                         override fun onPreDraw(): Boolean {
-                            view.viewTreeObserver.removeOnPreDrawListener(this)
-                            val location = IntArray(2)
-                            view.getLocationOnScreen(location)
-                            view.pivotX = 0f
-                            view.pivotY = 0f
-                            view.translationX = (attr.screenX - location[0]).toFloat()
-                            view.translationY = (attr.screenY - location[1]).toFloat()
-                            view.scaleX = attr.width * 1.0f / view.width
-                            view.scaleY = attr.height * 1.0f / view.height
-                            view.alpha = attr.alpha
-                            val srcAlpha = view.alpha
-                            view.animate().alpha(srcAlpha)
-                                .translationX(0f)
-                                .translationY(0f)
-                                .scaleX(1f)
-                                .scaleY(1f)
-                                .setDuration(duration)
-                                .setInterpolator(interpolator)
-                                .setListener(listener)
-                                .start()
+                            val listen = this
+                            view.run {
+                                viewTreeObserver.removeOnPreDrawListener(listen)
+                                val location = IntArray(2)
+                                getLocationOnScreen(location)
+                                pivotX = 0f
+                                pivotY = 0f
+                                translationX = (attr.screenX - location[0]).toFloat()
+                                translationY = (attr.screenY - location[1]).toFloat()
+                                scaleX = attr.width * 1.0f / width
+                                scaleY = attr.height * 1.0f / height
+                                alpha = attr.alpha
+                                val srcAlpha = alpha
+                                animate().alpha(srcAlpha)
+                                    .translationX(0f)
+                                    .translationY(0f)
+                                    .scaleX(1f)
+                                    .scaleY(1f)
+                                    .setDuration(duration)
+                                    .setInterpolator(interpolator)
+                                    .setListener(listener)
+                                    .start()
+                            }
                             return true
                         }
                     })
@@ -449,26 +454,27 @@ class KK private constructor(animationComposer: AnimationComposer) {
             }
             for (attr in attrs) {
                 val view: View = activity.findViewById(attr.id) ?: continue
-                val location = IntArray(2)
-                view.getLocationOnScreen(location)
-                view.pivotX = 0f
-                view.pivotY = 0f
-                view.animate().alpha(attr.alpha)
-                    .translationX((attr.screenX - location[0]).toFloat())
-                    .translationY((attr.screenY - location[1]).toFloat())
-                    .scaleX(attr.width * 1.00f / view.width)
-                    .scaleY(attr.height * 1.00f / view.height)
-                    .setDuration(duration)
-                    .setInterpolator(interpolator)
-                    .setListener(listener)
-                    .start()
+                view.run {
+                    val location = IntArray(2)
+                    getLocationOnScreen(location)
+                    pivotX = 0f
+                    pivotY = 0f
+                    animate().alpha(attr.alpha)
+                        .translationX((attr.screenX - location[0]).toFloat())
+                        .translationY((attr.screenY - location[1]).toFloat())
+                        .scaleX(attr.width * 1.00f / width)
+                        .scaleY(attr.height * 1.00f / height)
+                        .setDuration(duration)
+                        .setInterpolator(interpolator)
+                        .setListener(listener)
+                        .start()
+                }
             }
             Handler().postDelayed({
-                activity.finish()
-                activity.overridePendingTransition(
-                    0,
-                    0
-                )
+                activity.run {
+                    finish()
+                    overridePendingTransition(0,0)
+                }
             }, duration)
         }
     }

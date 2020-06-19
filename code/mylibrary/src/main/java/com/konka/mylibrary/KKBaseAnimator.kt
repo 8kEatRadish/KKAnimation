@@ -39,14 +39,16 @@ abstract class KKBaseAnimator {
      * @param target
      */
     fun reset(target: View?) {
-        target?.alpha = 1f
-        target?.scaleX = 1f
-        target?.scaleY = 1f
-        target?.translationX = 0f
-        target?.translationY = 0f
-        target?.rotation = 0f
-        target?.rotationX = 0f
-        target?.rotationY = 0f
+        target?.run {
+            alpha = 1f
+            scaleX = 1f
+            scaleY = 1f
+            translationX = 0f
+            translationY = 0f
+            rotation = 0f
+            rotationX = 0f
+            rotationY = 0f
+        }
     }
 
     /**
@@ -55,12 +57,16 @@ abstract class KKBaseAnimator {
     fun start() {
         for (animator in mAnimatorSet!!.childAnimations) {
             if (animator is ValueAnimator) {
-                animator.repeatCount = mRepeatTimes
-                animator.repeatMode = mRepeatMode
+                animator.run {
+                    repeatCount = mRepeatTimes
+                    repeatMode = mRepeatMode
+                }
             }
         }
-        mAnimatorSet!!.duration = mDuration
-        mAnimatorSet!!.start()
+        mAnimatorSet!!.run {
+            duration = mDuration
+            start()
+        }
     }
 
     fun setDuration(duration: Long): KKBaseAnimator {

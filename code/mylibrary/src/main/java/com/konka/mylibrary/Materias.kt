@@ -19,18 +19,20 @@ class Materials private constructor(views: Array<out View>) {
 
     init {
         for (view in views) {
-            val location = IntArray(2)
-            view.getLocationOnScreen(location)
-            viewAttrs.add(
-                ViewAttrs(
-                    view.id,
-                    view.alpha,
-                    location[0],
-                    location[1],
-                    view.width,
-                    view.height
+            view.run {
+                val location = IntArray(2)
+                getLocationOnScreen(location)
+                viewAttrs.add(
+                    ViewAttrs(
+                        id,
+                        alpha,
+                        location[0],
+                        location[1],
+                        width,
+                        height
+                    )
                 )
-            )
+            }
         }
     }
 }
